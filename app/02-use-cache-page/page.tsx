@@ -1,5 +1,4 @@
-"use cache";
-
+// "use cache";
 import { cacheLife } from "next/cache";
 import { getAllProducts } from "@/lib/db";
 import { getRenderTimestamp } from "@/lib/timestamp";
@@ -16,10 +15,13 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Info, TriangleAlert } from "lucide-react";
+import { CacheLifecycle } from "../01-no-cache/CacheLifeCycle";
 
 export default async function UseCachePage() {
-  cacheLife("demo_short");
-  const products = await getAllProducts();
+  // cacheLife("demo_short");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const products: any[] = [];
   const ts = getRenderTimestamp();
 
   return (
@@ -57,19 +59,7 @@ export default async function UseCachePage() {
             <span className="text-foreground font-medium">demo_short</span>
           </div>
           <Separator className="my-2" />
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="secondary" className="font-mono">
-              stale 10s
-            </Badge>
-            <span>→</span>
-            <Badge variant="secondary" className="font-mono">
-              revalidate 15s
-            </Badge>
-            <span>→</span>
-            <Badge variant="secondary" className="font-mono">
-              expire 30s
-            </Badge>
-          </div>
+          <CacheLifecycle />
         </CardContent>
       </Card>
 

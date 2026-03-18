@@ -6,7 +6,7 @@ export type Product = {
   category: string;
 };
 
-let products: Product[] = [
+const products: Product[] = [
   {
     id: 1,
     name: "Mechanical Keyboard",
@@ -31,7 +31,7 @@ let nextId = 6;
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function getAllProducts(): Promise<Product[]> {
-  await delay(300);
+  await delay(2000);
   return [...products];
 }
 
@@ -67,5 +67,13 @@ export async function decrementStock(id: number): Promise<Product | null> {
   const product = products.find((p) => p.id === id);
   if (!product || product.stock === 0) return null;
   product.stock -= 1;
+  return { ...product };
+}
+
+export async function incrementStock(id: number): Promise<Product | null> {
+  await delay(250);
+  const product = products.find((p) => p.id === id);
+  if (!product || product.stock === 0) return null;
+  product.stock += 1;
   return { ...product };
 }

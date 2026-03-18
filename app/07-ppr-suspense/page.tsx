@@ -1,12 +1,22 @@
-// No "use cache" here — this is the dynamic wrapper.
-// It reads cookies() safely, then passes cart data into the cached shell.
-import { getCart } from "./actions";
+import { Suspense } from "react";
 import { PPRShell } from "./PPRShell";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DynamicCart } from "./DynamicCart";
 
 export default async function PPRPage() {
-  // cookies() is called here at the route level — outside any cache boundary.
-  // This is the pattern Next.js recommends: read dynamic data outside,
-  // pass it as a prop into the cached component.
-  const cart = await getCart();
-  return <PPRShell cart={cart} />;
+  return (
+    <>
+      <PPRShell />
+      <Suspense
+        fallback={
+          <div className="space-y-2 pt-2">
+            <Skeleton className="h-11 w-full rounded-md" />
+            <Skeleton className="h-3 w-1/2 mx-auto" />
+          </div>
+        }
+      >
+        <DynamicCart productId={1} />
+      </Suspense>
+    </>
+  );
 }

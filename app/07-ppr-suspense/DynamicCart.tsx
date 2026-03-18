@@ -1,23 +1,13 @@
-import { cookies } from "next/headers";
 import { getRenderTimestamp } from "@/lib/timestamp";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, Trash2 } from "lucide-react";
-import { addToCart, clearCart, type CartItem } from "./actions";
+import { addToCart, clearCart, getCart } from "./actions";
 
-// cart is passed in as a prop — the caller (page.tsx) reads cookies()
-// outside the "use cache" boundary and forwards the data here.
-// This is the exact pattern Next.js recommends to avoid calling cookies()
-// inside a cache scope: read outside, pass in as argument.
-export async function DynamicCart({
-  productId,
-  cart,
-}: {
-  productId: number;
-  cart: CartItem[];
-}) {
+export async function DynamicCart({ productId }: { productId: number }) {
+  const cart = await getCart();
   const ts = getRenderTimestamp();
   const item = cart.find((i) => i.productId === productId);
   const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);

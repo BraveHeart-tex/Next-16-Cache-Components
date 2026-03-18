@@ -1,8 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
-import { getProductById } from "@/lib/db";
+import { decrementStock, getProductById, incrementStock } from "@/lib/db";
 
 export type CartItem = {
   productId: number;
@@ -51,16 +51,20 @@ export async function addToCart(productId: number) {
     });
   }
 
+  await decrementStock(productId);
+
   cookieStore.set("cart", serializeCart(cart), {
     path: "/",
     maxAge: 60 * 60 * 24,
   });
-
-  revalidatePath("/07-ppr-suspense");
 }
 
 export async function clearCart() {
   const cookieStore = await cookies();
+  const cart = parseCart(cookieStore.get("cart")?.value);
+
+  await Promise.all(cart.map((item) => incrementStock(item.productId)));
+
   cookieStore.delete("cart");
   revalidatePath("/07-ppr-suspense");
 }

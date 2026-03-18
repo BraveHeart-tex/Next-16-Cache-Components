@@ -41,8 +41,10 @@ async function fetchSlowWidget() {
   return { value: "94%", label: "Cache hit rate this week" };
 }
 
-async function fetchBrokenData(): Promise<never> {
+// TODO: Test error boundaries here
+async function fetchBrokenData() {
   await delay(500);
+  return null;
   // throw new Error("Failed to load — simulated network error");
 }
 
